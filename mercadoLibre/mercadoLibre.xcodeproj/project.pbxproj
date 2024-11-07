@@ -10,6 +10,7 @@
 		AC2084DB2CDD128E00E27346 /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2084DA2CDD128E00E27346 /* ProductCell.swift */; };
 		AC2084DD2CDD12D100E27346 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2084DC2CDD12D100E27346 /* Item.swift */; };
 		AC2084DF2CDD12E000E27346 /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2084DE2CDD12E000E27346 /* SearchResult.swift */; };
+		AC2084E12CDD1AE400E27346 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2084E02CDD1ADD00E27346 /* APIService.swift */; };
 		ACBF0C762CCAEEEC00466582 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBF0C752CCAEEEC00466582 /* AppDelegate.swift */; };
 		ACBF0C782CCAEEEC00466582 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBF0C772CCAEEEC00466582 /* SceneDelegate.swift */; };
 		ACBF0C7A2CCAEEEC00466582 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBF0C792CCAEEEC00466582 /* ViewController.swift */; };
@@ -22,6 +23,7 @@
 		AC2084DA2CDD128E00E27346 /* ProductCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
 		AC2084DC2CDD12D100E27346 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		AC2084DE2CDD12E000E27346 /* SearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
+		AC2084E02CDD1ADD00E27346 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		ACBF0C722CCAEEEC00466582 /* mercadoLibre.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mercadoLibre.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACBF0C752CCAEEEC00466582 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ACBF0C772CCAEEEC00466582 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 		ACBF0C742CCAEEEC00466582 /* mercadoLibre */ = {
 			isa = PBXGroup;
 			children = (
+				AC2084E02CDD1ADD00E27346 /* APIService.swift */,
 				ACBF0C752CCAEEEC00466582 /* AppDelegate.swift */,
 				ACBF0C772CCAEEEC00466582 /* SceneDelegate.swift */,
 				ACBF0C792CCAEEEC00466582 /* ViewController.swift */,
@@ -148,6 +151,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC2084DD2CDD12D100E27346 /* Item.swift in Sources */,
+				AC2084E12CDD1AE400E27346 /* APIService.swift in Sources */,
 				ACBF0C7A2CCAEEEC00466582 /* ViewController.swift in Sources */,
 				AC2084DB2CDD128E00E27346 /* ProductCell.swift in Sources */,
 				ACBF0C762CCAEEEC00466582 /* AppDelegate.swift in Sources */,

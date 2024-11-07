@@ -16,6 +16,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     let initialMessageLabel = UILabel() // Etiqueta para mostrar mensajes iniciales o errores
     let activityIndicator = UIActivityIndicatorView(style: .medium) // Indicador de carga
     var lastSearchTerm: String? // Almacena el último término de búsqueda para evitar búsquedas repetidas
+    let apiService = APIService() // Instancia de APIService para manejar la búsqueda
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,55 +91,37 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
-    // Realizar la búsqueda de productos
+    // Llamar a APIService para realizar la búsqueda de productos
     func searchProducts(term: String) {
         activityIndicator.startAnimating() // Mostrar el indicador de carga
         
-        // Codificar el término de búsqueda para URL y construir la URL de búsqueda
-        guard let encodedTerm = term.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-              let url = URL(string: "https://api.mercadolibre.com/sites/MLC/search?q=\(encodedTerm)") else {
-            return
-        }
-        
-        // Realizar la solicitud de búsqueda
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+        // Usar la instancia de APIService para realizar la búsqueda
+        apiService.searchProducts(term: term) { [weak self] result in
             DispatchQueue.main.async {
                 self?.activityIndicator.stopAnimating() // Ocultar el indicador de carga
             }
-            if let error = error {
-                // Mostrar un mensaje de error si la búsqueda falla
+            switch result {
+            case .success(let products):
                 DispatchQueue.main.async {
-                    self?.initialMessageLabel.text = "Ocurrió un error, intentar nuevamente"
-                    self?.initialMessageLabel.isHidden = false
-                    self?.tableView.isHidden = true
-                }
-                print("Error searching products: \(error)")
-                return
-            }
-            
-            guard let data = data else {
-                return
-            }
-            
-            do {
-                // Decodificar el resultado de la búsqueda en un objeto SearchResult
-                let result = try JSONDecoder().decode(SearchResult.self, from: data)
-                DispatchQueue.main.async {
-                    if result.results.isEmpty {
+                    if products.isEmpty {
                         // Si no se encontraron productos, mostrar un mensaje
                         self?.initialMessageLabel.text = "No se encontraron productos"
                         self?.initialMessageLabel.isHidden = false
                         self?.tableView.isHidden = true
                     } else {
                         // Si se encontraron productos, actualizar la lista y recargar la tabla
-                        self?.items = result.results
+                        self?.items = products
                         self?.tableView.reloadData()
                     }
                 }
-            } catch {
-                print("Error decoding: \(error)") // Manejar errores de decodificación
+            case .failure:
+                DispatchQueue.main.async {
+                    self?.initialMessageLabel.text = "Ocurrió un error, intentar nuevamente"
+                    self?.initialMessageLabel.isHidden = false
+                    self?.tableView.isHidden = true
+                }
             }
-        }.resume() // Iniciar la tarea de búsqueda
+        }
     }
     
     // Número de filas en la tabla
@@ -161,5 +144,3 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return 80 // Devolver la altura de la celda (80 puntos)
     }
 }
-
-
