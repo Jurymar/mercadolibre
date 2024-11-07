@@ -111,7 +111,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                     } else {
                         // Si se encontraron productos, actualizar la lista y recargar la tabla
                         self?.items = products
-                        self?.tableView.reloadData()
+                        self?.tableView.reloadData() //recarga la tabla y muestra el resultado
                     }
                 }
             case .failure:
