@@ -93,36 +93,45 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     // Llamar a APIService para realizar la búsqueda de productos
     func searchProducts(term: String) {
-        activityIndicator.startAnimating() // Mostrar el indicador de carga
+        // Paso 1: Mostrar un indicador de carga en la interfaz de usuario
+        activityIndicator.startAnimating() // Esto informa al usuario que se está procesando la búsqueda.
         
-        // Usar la instancia de APIService para realizar la búsqueda
-        apiService.searchProducts(term: term) { [weak self] result in
+        // Paso 2: Llamar al método `searchProducts` del servicio de API
+        // Aquí se pasa un closure como argumento para manejar el resultado asíncrono de la búsqueda.
+        apiService.searchProducts(term: term, completion: { [weak self] result in
+            // Paso 3: Asegurarse de ejecutar el manejo de resultados en el hilo principal.
+            // Todas las operaciones que actualizan la interfaz de usuario deben realizarse en el hilo principal.
             DispatchQueue.main.async {
-                self?.activityIndicator.stopAnimating() // Ocultar el indicador de carga
+                self?.activityIndicator.stopAnimating() // Detener el indicador de carga.
             }
+            
+            // Paso 4: Manejar el resultado devuelto por la API.
             switch result {
-            case .success(let products):
+            case .success(let products): // Si la solicitud fue exitosa y devolvió productos:
                 DispatchQueue.main.async {
                     if products.isEmpty {
-                        // Si no se encontraron productos, mostrar un mensaje
+                        // Caso 4.1: Si no se encontraron productos, mostrar un mensaje.
                         self?.initialMessageLabel.text = "No se encontraron productos"
-                        self?.initialMessageLabel.isHidden = false
-                        self?.tableView.isHidden = true
+                        self?.initialMessageLabel.isHidden = false // Mostrar el mensaje.
+                        self?.tableView.isHidden = true // Ocultar la tabla.
                     } else {
-                        // Si se encontraron productos, actualizar la lista y recargar la tabla
-                        self?.items = products
-                        self?.tableView.reloadData()
+                        // Caso 4.2: Si se encontraron productos, actualizarlos en la tabla.
+                        self?.items = products // Almacenar los productos en la propiedad `items`.
+                        self?.tableView.reloadData() // Recargar la tabla con los nuevos datos.
                     }
                 }
-            case .failure:
+                
+            case .failure: // Si hubo un error en la solicitud:
                 DispatchQueue.main.async {
+                    // Mostrar un mensaje de error al usuario.
                     self?.initialMessageLabel.text = "Ocurrió un error, intentar nuevamente"
-                    self?.initialMessageLabel.isHidden = false
-                    self?.tableView.isHidden = true
+                    self?.initialMessageLabel.isHidden = false // Mostrar el mensaje.
+                    self?.tableView.isHidden = true // Ocultar la tabla de resultados.
                 }
             }
-        }
+        })
     }
+
     
     // Número de filas en la tabla
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

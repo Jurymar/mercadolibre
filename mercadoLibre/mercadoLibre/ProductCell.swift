@@ -73,21 +73,29 @@ class ProductCell: UITableViewCell {
     
     // Configurar la celda con los datos del item
     func configure(with item: Item) {
-        titleLabel.text = item.title // Asigna el título del producto a la etiqueta correspondiente
-        priceLabel.text = String(format: "$%.2f", item.price) // Muestra el precio formateado en la etiqueta de precio
-        errorLabel.isHidden = true // Oculta el mensaje de error por defecto
-        productImageView.image = nil // Resetea la imagen del producto
+        // 1. Asigna el título del producto a la etiqueta correspondiente
+        titleLabel.text = item.title
         
-        // Desempaquetar item.thumbnail si no es nil, y crear una URL a partir del valor
+        // 2. Formatea y asigna el precio a la etiqueta de precio
+        priceLabel.text = String(format: "$%.2f", item.price)
+        
+        // 3. Oculta el mensaje de error por defecto
+        errorLabel.isHidden = true
+        
+        // 4. Resetea la imagen del producto (limpia cualquier imagen anterior)
+        productImageView.image = nil
+        
+        // 5. Verifica que item.thumbnail no sea nil y crea un objeto URL a partir del thumbnail
         guard let thumbnail = item.thumbnail, let url = URL(string: thumbnail) else {
-            return // Si el thumbnail es nil o la URL no es válida, salir de la función
+            return // Si thumbnail es nil o la URL no es válida, termina la función.
         }
         
-        // Descarga la imagen de forma asíncrona
+        // 6. Descarga la imagen de forma asíncrona desde la URL
         URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            // 7. Maneja el error si ocurre durante la descarga
             if let error = error {
-                // Si hay un error al descargar la imagen, mostrar un mensaje de error en la interfaz de usuario
                 DispatchQueue.main.async {
+                    // Muestra el mensaje de error en la interfaz
                     self?.errorLabel.text = "Ocurrió un error, intentar nuevamente"
                     self?.errorLabel.isHidden = false
                 }
@@ -95,14 +103,14 @@ class ProductCell: UITableViewCell {
                 return
             }
             
-            // Si la descarga de la imagen es exitosa, convierte los datos en una UIImage
+            // 8. Intenta convertir los datos descargados en una UIImage
             if let data = data, let image = UIImage(data: data) {
-                // Actualiza la interfaz de usuario en el hilo principal
                 DispatchQueue.main.async {
-                    self?.productImageView.image = image // Muestra la imagen en el ImageView
-                    self?.errorLabel.isHidden = true // Oculta el mensaje de error
+                    // 9. Actualiza la interfaz: muestra la imagen y oculta el error
+                    self?.productImageView.image = image
+                    self?.errorLabel.isHidden = true
                 }
             }
-        }.resume() // Inicia la tarea de descarga
+        }.resume() // 10. Inicia la tarea de descarga
     }
 }

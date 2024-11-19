@@ -1,0 +1,41 @@
+func configure(with item: Item) {
+    // 1. Asigna el título del producto a la etiqueta correspondiente
+    titleLabel.text = item.title 
+    
+    // 2. Formatea y asigna el precio a la etiqueta de precio
+    priceLabel.text = String(format: "$%.2f", item.price)
+    
+    // 3. Oculta el mensaje de error por defecto
+    errorLabel.isHidden = true 
+    
+    // 4. Resetea la imagen del producto (limpia cualquier imagen anterior)
+    productImageView.image = nil 
+    
+    // 5. Verifica que item.thumbnail no sea nil y crea un objeto URL a partir del thumbnail
+    guard let thumbnail = item.thumbnail, let url = URL(string: thumbnail) else {
+        return // Si thumbnail es nil o la URL no es válida, termina la función.
+    }
+    
+    // 6. Descarga la imagen de forma asíncrona desde la URL
+    URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+        // 7. Maneja el error si ocurre durante la descarga
+        if let error = error {
+            DispatchQueue.main.async {
+                // Muestra el mensaje de error en la interfaz
+                self?.errorLabel.text = "Ocurrió un error, intentar nuevamente"
+                self?.errorLabel.isHidden = false
+            }
+            print("Error loading image: \(error)")
+            return
+        }
+        
+        // 8. Intenta convertir los datos descargados en una UIImage
+        if let data = data, let image = UIImage(data: data) {
+            DispatchQueue.main.async {
+                // 9. Actualiza la interfaz: muestra la imagen y oculta el error
+                self?.productImageView.image = image
+                self?.errorLabel.isHidden = true
+            }
+        }
+    }.resume() // 10. Inicia la tarea de descarga
+}
