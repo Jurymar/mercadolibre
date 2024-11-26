@@ -4,7 +4,6 @@
 //
 //  Created by Jurymar Colmenares on 24/10/24.
 //
-
 import UIKit
 
 // Controlador principal que maneja la barra de búsqueda y la tabla
@@ -41,7 +40,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         tableView.translatesAutoresizingMaskIntoConstraints = false // Permitir restricciones personalizadas
         
         // Configurar la etiqueta del mensaje inicial
-        initialMessageLabel.text = "Realiza una búsqueda para ver los productos" // Mensaje inicial
+        initialMessageLabel.text = "Realiza una búsqueda para ver los productos 👆" // Mensaje inicial
         initialMessageLabel.textAlignment = .center // Centrar el texto
         initialMessageLabel.numberOfLines = 0 // Permitir múltiples líneas de texto
         view.addSubview(initialMessageLabel) // Agregar la etiqueta a la vista principal
@@ -71,23 +70,37 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     // Manejar cambios en el texto de la barra de búsqueda
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        // Paso 1: Comprobar si el nuevo término de búsqueda es igual al último término usado
         guard searchText != lastSearchTerm else {
-            return // Evitar búsquedas repetidas con el mismo término
+            return // Si son iguales, no hacer nada para evitar búsquedas repetidas
         }
-        lastSearchTerm = searchText // Almacenar el nuevo término de búsqueda
         
+        // Paso 2: Actualizar el término de búsqueda más reciente
+        lastSearchTerm = searchText
+        
+        // Paso 3: Verificar si el texto ingresado está vacío
         if searchText.isEmpty {
-            // Si el texto de búsqueda está vacío, limpiar resultados y mostrar mensaje inicial
-            items = []
-            tableView.reloadData() // Recargar la tabla con los datos vacíos
-            initialMessageLabel.text = "Realiza una búsqueda para ver los productos" // Mostrar el mensaje inicial
+            // Caso 3.1: Si el texto está vacío, limpiar los resultados de búsqueda
+            items = [] // Vaciar la lista de productos
+            tableView.reloadData() // Recargar la tabla para reflejar los datos vacíos
+            
+            // Paso 3.2: Mostrar un mensaje inicial al usuario
+            initialMessageLabel.text = "Realiza una búsqueda para ver los productos 👆" // Texto informativo
             initialMessageLabel.isHidden = false // Asegurarse de que el mensaje esté visible
-            tableView.isHidden = true // Ocultar la tabla de resultados
+            
+            // Paso 3.3: Ocultar la tabla de resultados porque no hay datos que mostrar
+            tableView.isHidden = true
         } else {
-            // Si hay texto en la búsqueda, realizar la búsqueda de productos
+            // Caso 3.4: Si hay texto en la barra de búsqueda, realizar la búsqueda de productos
+            
+            // Paso 4.1: Iniciar la búsqueda llamando a la función `searchProducts`
             searchProducts(term: searchText)
-            initialMessageLabel.isHidden = true // Ocultar el mensaje inicial
-            tableView.isHidden = false // Mostrar la tabla de resultados
+            
+            // Paso 4.2: Ocultar el mensaje inicial porque ahora se mostrarán los resultados
+            initialMessageLabel.isHidden = true
+            
+            // Paso 4.3: Mostrar la tabla de resultados con los datos obtenidos
+            tableView.isHidden = false
         }
     }
     
@@ -111,7 +124,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 DispatchQueue.main.async {
                     if products.isEmpty {
                         // Caso 4.1: Si no se encontraron productos, mostrar un mensaje.
-                        self?.initialMessageLabel.text = "No se encontraron productos"
+                        self?.initialMessageLabel.text = "No se encontraron productos "
                         self?.initialMessageLabel.isHidden = false // Mostrar el mensaje.
                         self?.tableView.isHidden = true // Ocultar la tabla.
                     } else {
@@ -132,7 +145,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         })
     }
 
-    
     // Número de filas en la tabla
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count // Devolver el número de productos en la lista
