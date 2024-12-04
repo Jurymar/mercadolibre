@@ -27,18 +27,19 @@ class APIService {
         }
         
         // Paso 2: Crear una solicitud de red usando URLSession.
-        URLSession.shared.dataTask(with: url) { data, _, error in
+        //dataTask recibe 3 parametros de entrada, pero voy a utilizar shorthand para sustituir los nombre de los parametros
+        URLSession.shared.dataTask(with: url) {
             // Este bloque de código es un *closure* que se ejecuta cuando la tarea de red finaliza.
             
             // Paso 3: Manejar posibles errores de la solicitud de red.
-            if let error = error {
+            if let error = $2 {
                 // Si ocurre un error de conexión, invocar el closure con el error.
                 completion(.failure(error))
                 return
             }
             
             // Paso 4: Verificar que se haya recibido data válida.
-            guard let data = data else {
+            guard let data = $0 else {
                 // Si no hay datos, invocar el closure con un error de datos.
                 completion(.failure(NSError(domain: "Data Error", code: 0, userInfo: nil)))
                 return

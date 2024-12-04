@@ -111,45 +111,46 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         // Paso 2: Llamar al método `searchProducts` del servicio de API
         // Aquí se pasa un closure como argumento para manejar el resultado asíncrono de la búsqueda.
-        apiService.searchProducts(term: term, completion: { [weak self] result in
+        //como en la funcion el closure esta de ultimo osea es un trailing closure, no es necesario utilizar el nombre, puedo implementar el closure directo { result in }, cambio por $0
+        apiService.searchProducts(term: term) {
             // Paso 3: Asegurarse de ejecutar el manejo de resultados en el hilo principal.
             // Todas las operaciones que actualizan la interfaz de usuario deben realizarse en el hilo principal.
             DispatchQueue.main.async {
-                self?.activityIndicator.stopAnimating() // Detener el indicador de carga.
+                self.activityIndicator.stopAnimating() // Detener el indicador de carga.
             }
             
             // Paso 4: Manejar el resultado devuelto por la API.
-            switch result {
+            switch $0 {
             case .success(let products): // Si la solicitud fue exitosa y devolvió productos:
                 DispatchQueue.main.async {
                     if products.isEmpty {
                         // Caso 4.1: Si no se encontraron productos, mostrar un mensaje.
-                        self?.initialMessageLabel.text = "No se encontraron productos "
-                        self?.initialMessageLabel.isHidden = false // Mostrar el mensaje.
-                        self?.tableView.isHidden = true // Ocultar la tabla.
+                        self.initialMessageLabel.text = "No se encontraron productos "
+                        self.initialMessageLabel.isHidden = false // Mostrar el mensaje.
+                        self.tableView.isHidden = true // Ocultar la tabla.
                     } else {
                         // Caso 4.2: Si se encontraron productos, actualizarlos en la tabla.
-                        self?.items = products // Almacenar los productos en la propiedad `items`.
-                        self?.tableView.reloadData() // Recargar la tabla con los nuevos datos.
+                        self.items = products // Almacenar los productos en la propiedad `items`.
+                        self.tableView.reloadData() // Recargar la tabla con los nuevos datos.
                     }
                 }
                 
             case .failure: // Si hubo un error en la solicitud:
                 DispatchQueue.main.async {
                     // Mostrar un mensaje de error al usuario.
-                    self?.initialMessageLabel.text = "Ocurrió un error, intentar nuevamente"
-                    self?.initialMessageLabel.isHidden = false // Mostrar el mensaje.
-                    self?.tableView.isHidden = true // Ocultar la tabla de resultados.
+                    self.initialMessageLabel.text = "Ocurrió un error, intentar nuevamente"
+                    self.initialMessageLabel.isHidden = false // Mostrar el mensaje.
+                    self.tableView.isHidden = true // Ocultar la tabla de resultados.
                 }
             }
-        })
+        }
     }
 
     // Número de filas en la tabla
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count // Devolver el número de productos en la lista
     }
-    
+    //IndexPath indica la ubicación de una celda dentro de una tabla esta compuesto por section y row
     // Configurar cada celda de la tabla
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ProductCell", for: indexPath) as? ProductCell else {
@@ -163,5 +164,16 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     // Altura de cada celda
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80 // Devolver la altura de la celda (80 puntos)
+    }
+    
+    // Método para detectar cuando se toca una celda
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Imprimir un mensaje en la consola cuando se toca una celda
+        print("Tocaste la celda en la sección \(indexPath.section), fila \(indexPath.row)")
+        
+        // Si deseas deseleccionar la celda después de que se toque
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        //indexPath es un objeto que indica la posición de la celda seleccionada dentro de la tabla, proporcionando tanto la sección como la fila donde se encuentra.
     }
 }
