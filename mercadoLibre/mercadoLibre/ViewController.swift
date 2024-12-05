@@ -171,8 +171,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         // Imprimir un mensaje en la consola cuando se toca una celda
         print("Tocaste la celda en la sección \(indexPath.section), fila \(indexPath.row)")
         
-        // Si deseas deseleccionar la celda después de que se toque
-        tableView.deselectRow(at: indexPath, animated: true)
+//Estoy accediendo al elemento del array cuya posicion es la que tiene el indexPath.row
+        let item = items[indexPath.row]
+        let vc = DetailViewController(item: item)
+        show(vc, sender: nil)
         
         //indexPath es un objeto que indica la posición de la celda seleccionada dentro de la tabla, proporcionando tanto la sección como la fila donde se encuentra.
     }
